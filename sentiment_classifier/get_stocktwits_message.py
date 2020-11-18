@@ -1,4 +1,6 @@
-"""
+#!/usr/bin/env python3
+"""StockTwits Messages Downloader.
+
     Download messages from StockTwits API using multiple access keys.
 """
 import csv
@@ -14,13 +16,13 @@ def get_stocktwits_message(symbol, start="", end="",
                            file_name='data/stocktwits.csv'):
     """
     Download messages from StockTwits API using multiple access keys.
-    Write those to a .csv file
+    Write those messages to a .csv file.
 
     Parameters
     ----------
     symbol : str
         StockTwits cashtags to be retrieved messages.
-        e.g. Bitcoin has a cashtag of "$BTC.X".
+        e.g. Bitcoin has the cashtag "$BTC.X".
         Find more cashtags in the file at "data/symbols.csv"
     start : str
         Start date of retrieved messages (YYYY-MM-DD)
@@ -104,9 +106,9 @@ def get_stocktwits_message(symbol, start="", end="",
             api_hits += 1
             response = json.loads(response.text)
             last_message_id = response['cursor']['max']
-            # WRITE DATA TO CSV FILE
+            # Write data to csv file
             for message in response['messages']:
-                # PREPARE OBJECT TO WRITE IN CSV FILE
+                # Prepare object to write in csv file
                 if pd.Timestamp(message['created_at']) < start_date:
                     reach_start_date = True
                 elif pd.Timestamp(message['created_at']) > end_date:

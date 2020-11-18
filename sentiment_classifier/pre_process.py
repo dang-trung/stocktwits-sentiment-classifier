@@ -1,12 +1,13 @@
-"""
-This module pre-process the messages is based on  Chen et al. (2019).
+"""Text Pre-processing.
+
+This module process text messages based on  Chen et al. (2019).
 Added some steps (such as escaping HTML symbols, or having a more detailed list
-of stop and negative words)
+of stop and negative words).
 """
 import html
+import pandas as pd
 import re
 import string
-import pandas as pd
 
 # Repeated chars more than 3 times
 repeat_regex = r'(\w)\1{2,}'
@@ -40,6 +41,18 @@ punc_regex = rf"[{punctuation}]"
 
 
 def pre_process(text):
+    """
+    Text-process to remove all words unnecessary for classifying sentiment
+    Parameters
+    ----------
+    text : str
+        Text to be processed
+
+    Returns
+    -------
+    str
+        Processed text
+    """
     text = text.lower()  # Lowercase
     text = html.unescape(text)  # Convert html codes to normal strings
     text = re.sub(repeat_regex, r'\1\1\1', text)

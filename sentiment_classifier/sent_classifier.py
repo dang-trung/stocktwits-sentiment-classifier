@@ -1,13 +1,19 @@
+#!/usr/bin/env python3
+"""Random Forest Sentiment Classifier.
+
+This module classifies sentiment of +2m StockTwits messages related to
+cryptocurrencies.
+"""
+
+import warnings
 import pandas as pd
-from pre_process import pre_process
-from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.decomposition import TruncatedSVD
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics import confusion_matrix
-from sklearn.model_selection import RandomizedSearchCV
-import warnings
+from .pre_process import pre_process
 
-# avoid FutureWarning (unsure future conficts between numpy and pandas)
+# avoid FutureWarning (future conflicts between numpy and pandas)
 warnings.simplefilter(action='ignore', category=FutureWarning)
 pd.options.mode.chained_assignment = None  # avoid false SettingWithCopyWarning
 
@@ -16,7 +22,7 @@ stocktwits = pd.read_csv("data/stocktwits.csv", index_col=0)
 # extract all messages tagged with sentiment by user
 tagged_msg = stocktwits[stocktwits['sentiment'] != 'None']
 tagged_msg.reset_index(drop=True, inplace=True)
-# pre process the messages  
+# pre process the messages
 tagged_msg['processed'] = tagged_msg['message'].apply(pre_process)
 
 # vectorized the processed message into features using TF-IDF method
@@ -42,7 +48,7 @@ bull_id = tagged_msg['sentiment'][tagged_msg['sentiment'] == 'Bullish']
 train_bear = bear_id.sample(frac=0.5, random_state=RANDOM_STATE)
 test_bear = bear_id.loc[bear_id.index.difference(train_bear.index)]
 
-# randomly choose bull messages for training set 
+# randomly choose bull messages for training set
 # (same len as bear messages for a balanced set)
 # the rest goes to test set
 train_bull = bull_id.sample(n=len(train_bear), random_state=RANDOM_STATE)
@@ -67,8 +73,23 @@ rf.fit(train_features, train_target)
 
 
 # function to evaluate model:
-def evaluate(model, testf=test_features, testt=test_target,
-             trainf=train_features, traint=train_target):
+def evaluate(model, test_features=test_features, test_target=test_target,
+             train_features=train_features, train_target=train_target):
+    """
+    Print confusion matrices and predictive accuracy
+    (to evaluate a model's performance).
+    Parameters
+    ----------
+    model :
+    test_features :
+    test_target :
+    train_features :
+    train_target :
+
+    Returns
+    -------
+
+    """
     test_pred = model.predict(test_features)
     train_pred = model.predict(train_features)
     test_cf = confusion_matrix(test_target, test_pred)
@@ -94,24 +115,25 @@ def evaluate(model, testf=test_features, testt=test_target,
 
 base_accuracy = evaluate(rf)
 
-# tuning parameters
-random_grid = {
-    'bootstrap': [True],
-    'max_depth': [5, 10, 20],
-    'max_features': ['sqrt', 'log2'],
-    'n_estimators': [50, 100, 200],
-    'max_samples': [0.25, 0.5, 0.75]
-}
-
-rf_tune = RandomForestClassifier()
-rf_random = RandomizedSearchCV(estimator=rf_tune,
-                               param_distributions=random_grid,
-                               n_iter=25, cv=3,
-                               random_state=RANDOM_STATE, n_jobs=-1)
-rf_random.fit(train_features, train_target)
-best_rf = rf_random.best_estimator_
-
-random_accuracy = evaluate(best_rf)
-
-impr_rate = (random_accuracy - base_accuracy) / base_accuracy
-print(f"Improvement of {round(impr_rate * 100, 2)} %.")
+# from sklearn.model_selection import RandomizedSearchCV
+# # tuning parameters
+# random_grid = {
+#     'bootstrap': [True],
+#     'max_depth': [5, 10, 20],
+#     'max_features': ['sqrt', 'log2'],
+#     'n_estimators': [50, 100, 200],
+#     'max_samples': [0.25, 0.5, 0.75]
+# }
+#
+# rf_tune = RandomForestClassifier()
+# rf_random = RandomizedSearchCV(estimator=rf_tune,
+#                                param_distributions=random_grid,
+#                                n_iter=25, cv=3,
+#                                random_state=RANDOM_STATE, n_jobs=-1)
+# rf_random.fit(train_features, train_target)
+# best_rf = rf_random.best_estimator_
+#
+# random_accuracy = evaluate(best_rf)
+#
+# impr_rate = (random_accuracy - base_accuracy) / base_accuracy
+# print(f"Improvement of {round(impr_rate * 100, 2)} %.")
