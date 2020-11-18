@@ -37,6 +37,7 @@ def get_stocktwits_message(symbol, start="", end="",
         None
 
     """
+    print(f"Getting messages with cashtags {symbol}...")
     fields = ['symbol', 'message', 'sentiment', 'datetime', 'user',
               'message_id']
     token = 0
@@ -141,4 +142,6 @@ def get_stocktwits_message(symbol, start="", end="",
                          + "max=" + str(last_message_id))
         token = (token + 1) % (len(access_token))
 
+    print(f"Finished {symbol}!")
+    print("------------")
     file.close()

@@ -13,7 +13,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics import confusion_matrix
 
 from sentiment_classifier.get_stocktwits_message import get_stocktwits_message
-from .pre_process import pre_process
+from sentiment_classifier.pre_process import pre_process
 
 if __name__ == '__main__':
     symbols = pd.read_csv('data//symbols.csv', header=None)[1]
@@ -22,20 +22,30 @@ if __name__ == '__main__':
     start = "2014-11-28"
     end = "2020-07-26"
     for symbol in symbols:
-        get_stocktwits_message(symbol=symbol, start=start, end=end,
-                               file_name=f"data//stocktwits//"
-                                         f"{symbol[:-2]}.csv")
-
+        try:
+            get_stocktwits_message(symbol=symbol, start=start, end=end,
+                                   file_name=f"data//stocktwits//"
+                                             f"{symbol[:-2]}.csv")
+        except IndexError:
+            print(f"No message about {symbol} on StockTwits.")
+            print("------------")
+    print(
+        f"Combining files containing messages about single symbols to a "
+        f"master file...")
+    print("------------")
     combined_csv = pd.concat(
         [pd.read_csv(f"data//stocktwits//{symbol[:-2]}.csv") for symbol in
          symbols], ignore_index=True)
     combined_csv.to_csv("data/stocktwits.csv")
 
+    print("Start classifying sentiment...")
+    print("------------")
+    print("Importing StockTwits messages...")
+    print("------------")
     # Avoid FutureWarning (future conflicts between numpy and pandas)
     warnings.simplefilter(action='ignore', category=FutureWarning)
     # Avoid False SettingWithCopyWarning
     pd.options.mode.chained_assignment = None
-
     # Import data
     stocktwits = pd.read_csv("data/stocktwits.csv", index_col=0)
     # Extract all messages tagged with sentiment by user
@@ -45,11 +55,15 @@ if __name__ == '__main__':
     tagged_msg['processed'] = tagged_msg['message'].apply(pre_process)
 
     # Vectorized the processed message into features using TF-IDF method
+    print("Vectorizing text messages using TF-IDF...")
+    print("------------")
     tfidf = TfidfVectorizer()
     vectors = tfidf.fit_transform(tagged_msg['processed'])
     vectorized_msg = pd.DataFrame.sparse.from_spmatrix(vectors)
 
     # Dimension Reduction using Truncated SVD
+    print("Reducing dimensions using Truncated SVD...")
+    print("------------")
     RANDOM_STATE = 42
     svd = TruncatedSVD(n_components=100, random_state=RANDOM_STATE)
     features = svd.fit_transform(vectorized_msg)
@@ -58,6 +72,7 @@ if __name__ == '__main__':
         f'Explained Variance Ratio: '
         f'{round(svd.explained_variance_ratio_.sum() * 100, 2)}%'
     )
+    print("------------")
 
     # extract the index of messages tagged with Bull or Bear
     bear_id = tagged_msg['sentiment'][tagged_msg['sentiment'] == 'Bearish']
@@ -84,6 +99,9 @@ if __name__ == '__main__':
     test_target = pd.concat([test_bear, test_bull])
 
     # apply Random Forest (base model)
+    print("Applying Random Forest...")
+    print("------------")
+
     rf = RandomForestClassifier(n_estimators=500, max_depth=20,
                                 max_features='sqrt', n_jobs=-1,
                                 max_samples=0.75, random_state=RANDOM_STATE,
@@ -91,30 +109,37 @@ if __name__ == '__main__':
 
     rf.fit(train_features, train_target)
 
+    print("Evaluating the classifier's performance...")
+    print("------------")
 
     def evaluate(model, test_features=test_features, test_target=test_target,
                  train_features=train_features, train_target=train_target):
         """
         Print confusion matrices and predictive accuracy
-        (to evaluate a model's performance).
+        (to evaluate the RF classfier's performance).
         Parameters
         ----------
-        model :
-        test_features :
-        test_target :
-        train_features :
-        train_target :
-
+        model : sklearn.ensemble._forest.RandomForestClassifier
+            sklearn's Random Forest Classfier.
+        test_features : DataFrame
+            Features in test data.
+        test_target : Series
+            Target in test data.
+        train_features : DataFrame
+            Features in train data.
+        train_target : Series
+            Target in train data.
         Returns
         -------
-
+        int
+            Prediction accuracy (Test data)
         """
         test_pred = model.predict(test_features)
         train_pred = model.predict(train_features)
         test_cf = confusion_matrix(test_target, test_pred)
         train_cf = confusion_matrix(train_target, train_pred)
 
-        accuracy = (test_cf[0][0] + test_cf[1][1]) / sum(test_cf)
+        accuracy = (test_cf[0][0] + test_cf[1][1]) / sum(sum(test_cf))
 
         cf_index = ['Bearish', 'Bullish']
         test_cf_df = pd.DataFrame(test_cf, columns=cf_index, index=cf_index)
@@ -122,20 +147,21 @@ if __name__ == '__main__':
 
         print('Model Performance')
         print(f'Accuracy: {round(accuracy * 100, 2)}%.')
-        print('--------')
+        print("------------")
         print('Confusion Matrix (Test Data):')
         print(test_cf_df)
-        print('--------')
+        print("------------")
         print('Confusion Matrix (Train Data):')
         print(train_cf_df)
+        print("------------")
 
         return accuracy
 
 
     base_accuracy = evaluate(rf)
 
+    # # Tuning parameters (Unfinished, blocked as comments)
     # from sklearn.model_selection import RandomizedSearchCV
-    # # tuning parameters
     # random_grid = {
     #     'bootstrap': [True],
     #     'max_depth': [5, 10, 20],
