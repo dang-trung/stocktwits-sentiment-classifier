@@ -1,5 +1,6 @@
 # stocktwits.csv (too big to be uploaded to Github)
 data/stocktwits.csv
+data/stocktwits/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
