@@ -3,7 +3,7 @@
 ## Project Description
 ### Introduction
 
-* **Objective**: Application of Random Forest (Project for my internship at [Research Center VERA](https://www.unive.it/pag/35190/), Ca' Foscari University of Venice).
+* **Objective**: Application of Random Forests (project for my intern at [Research Center VERA](https://www.unive.it/pag/35190/), Ca' Foscari University of Venice).
 * **Abstract**: 2,045,322 cryptocurrency-related Tweets (~287MB) are retrieved
     using [StockTwits API](https://api.stocktwits.com/developers/docs). The messages
     are posted from 28/11/2014 to 25/07/2020. Nearly half of those messages are 
@@ -23,7 +23,18 @@
 * numpy==1.18.5
 * pandas==1.0.5
 * scikit-learn==0.23.2
-
+## Table of Contents
+- [StockTwits Sentiment Classifier](#stocktwits-sentiment-classifier)
+  * [Project Description](#project-description)
+    + [Introduction](#introduction)
+    + [Methods Used](#methods-used)
+    + [Dependencies](#dependencies)
+  * [Getting Started](#getting-started)
+    + [How to Run](#how-to-run)
+    + [Data Storage](#data-storage)
+  * [Result](#result)
+  * [Read More](#read-more)
+  
 ## Getting Started
 
 ### How to Run
