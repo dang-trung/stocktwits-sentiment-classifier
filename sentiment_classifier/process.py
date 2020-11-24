@@ -5,9 +5,10 @@ Added some steps (such as escaping HTML symbols, or having a more detailed list
 of stop and negative words).
 """
 import html
-import pandas as pd
 import re
 import string
+
+import pandas as pd
 
 # Repeated chars more than 3 times
 repeat_regex = r'(\w)\1{2,}'
