@@ -1,26 +1,22 @@
-# stocktwits.csv (too big to be uploaded to Github)
-data/stocktwits.csv
-data/stocktwits/
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
 
-# virtualenv
+# Environments
 .venv/
 venv/
 ENV/
+.env
+.python-version
+
+# PyCharm project settings
+/.idea/
 
 # Spyder project settings
 /.spyproject/
-
-# pyenv
-.python-version
 
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
 
-# dotenv
-.env
