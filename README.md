@@ -102,7 +102,7 @@ For better understanding of the project, kindly read the [report](https://github
 <!-- MARKDOWN LINKS & IMAGES -->
 [python-shield]: https://img.shields.io/badge/Python-3.7.9-white?style=social&colorB=555
 [python-url]: https://www.python.org/downloads/release/python-379/
-[github-shield]: https://img.shields.io/badge/-github-black.svg?style=social&logo=github&colorB=555
+[github-shield]: https://img.shields.io/badge/-GitHub-black.svg?style=social&logo=github&colorB=555
 [github-url]: https://github.com/dang-trung/
 [license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=social
 [license-url]: https://github.com/dang-trung/stocktwits-sentiment-classifier/blob/master/LICENSE.md
