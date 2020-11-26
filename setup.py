@@ -22,9 +22,8 @@ setup(
     url='https://github.com/dang-trung/stocktwits-sentiment-classifier',
     author='Trung Dang',
     author_email='dangtrung96@gmail.com',
-    package_dir={'': 'src'},
-    packages=find_packages(include=['src', 'src.*']),
-    package_data={'': ['[file-to-be-include-in-package]']},
+    packages=find_packages(include=['sentiment_classifier']),
+    package_data={'external': ['data/00_external/*.csv']},
     python_requires='>=3.5, <4',
     install_requires=requirements,
 )
