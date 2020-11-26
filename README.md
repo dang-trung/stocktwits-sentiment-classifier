@@ -38,6 +38,7 @@
 * numpy==1.18.5
 * pandas==1.0.5
 * scikit-learn==0.23.2
+* requests==2.24.0
 
 # Table of Contents
 - [Project Description](#project-description)
