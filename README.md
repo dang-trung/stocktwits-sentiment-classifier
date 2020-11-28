@@ -1,6 +1,3 @@
-[![MIT License][license-shield]][license-url]
-[![GitHub][github-shield]][github-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
 
 <!-- PROJECT LOGO -->
 <br />
@@ -14,7 +11,11 @@
   <p align="center">
     An Application of Random Forest!
   </p>
-  
+
+[![MIT License][license-shield]][license-url]
+[![GitHub][github-shield]][github-url]
+[![LinkedIn][linkedin-shield]][linkedin-url]
+
 # Project Description
 ## Introduction
 
